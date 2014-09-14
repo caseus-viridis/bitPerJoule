@@ -1,0 +1,52 @@
+clc;
+clear;
+%%%term1 internal func plot
+k=0.4;
+b=10;
+% M=[1.3:0.1:4];
+M=1.3;
+Tu=0.008;
+delta=0.002;
+c0=1;
+c1=1;
+upbound=[1e6];
+reso_u=[1];
+for n=1:length(M)
+for i=1:length(upbound)
+for j=1:length(reso_u)
+%%%%trapz method
+u=b:reso_u(j):upbound(i); %%%firing rate index
+m=M(n);
+f1=@(u, k, b, m) (-(((u-b)./u).^(m-k-1)) .* ( (u.^(-k-1)) .* (log(b^k)+log((gamma(m)/gamma(k)))) + (u.^(-k-1)) .* ((k-m)*psi(0,m)- k*log(u)+ m*(u-b)./u ))...
+*b^k* (gamma(m)/(gamma(k)*gamma(m-k))) );
+term1=feval(f1, u, k, b, m);
+
+%%%term1 internal func plot
+x=0:0.001:0.006; %%%time index
+f2=@(x, u, b, k, m, delta, Tu) (x.^(m-1))*(u-b).^(m-k-1).*exp(-x.*u).*log((x+delta)/Tu) *k*b^k/(gamma(k)*gamma(m-k));
+term2=0.001*(feval(f2,0,u,b,k,m,delta,Tu)/2+feval(f2,0.001,u,b,k,m,delta,Tu)+feval(f2,0.002,u,b,k,m,delta,Tu)+feval(f2,0.003,u,b,k,m,delta,Tu)+feval(f2,0.004,u,b,k,m,delta,Tu)...
++feval(f2,0.005,u,b,k,m,delta,Tu)+feval(f2,0.006,u,b,k,m,delta,Tu)/2);
+% figure;plot(u,feval(f2, x, u, b, k, m, delta, Tu) -feval(f1, u, k, b, m)
+term12=term1+term2;
+% figure;plot(u,term1,u,term12,'r-')
+% set(gca, 'XScale', 'log');
+
+I(n)=diff(u)*(term12(:,1:length(u)-1)+term12(:,2:length(u)))'/2
+
+e(n)=(c0*(1+k)+c1*m)
+Ij(n)=I(n)/e(n) %I(\Lambda;T)+ElogT/Tu I_j
+Is(n)=I(n)/(k/b) %I_s
+
+end
+
+end
+
+end
+
+
+%%%%%%%%%%%%%%%%%%%
+function m = infoDist(kappa, m)
+% Jackie Xing & Xin Wang 2011
+m =
+((log(gamma(kappa))-kappa*psi(0,kappa)+kappa)-(log(gamma(m))-m.*psi(0,m)+m));
+
