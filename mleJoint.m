@@ -1,6 +1,6 @@
 function [kappa, b, m, nll] = mleJoint(t, lambda, kappa_, b_, m_, tol)
 
-% Estimate parameters from marginals
+% Estimate parameters from joint
 
 % Xin Wang <xinw@salk.edu>
 % Copyright 2014, CNL-S, The Salk Institute for Biological Studies
