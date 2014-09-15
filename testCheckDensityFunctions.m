@@ -24,6 +24,7 @@ t_              = linspace(tRange(1), tRange(2), ...
                     ceil(range(tRange)/tStep));
 lambda_         = linspace(lambdaRange(1), lambdaRange(2), ...
                     ceil(range(lambdaRange)/lambdaStep));
+n_              = t_ .* lambda_;
 
 [t, lambda]     = meshgrid(t_, lambda_);
 
@@ -32,11 +33,14 @@ pT              = pdfT(t_, kappa, b);
 pLambda         = pdfLambda(lambda_, kappa, b, m);
 pTgivenLambda   = pdfTgivenLambda(t, lambda, m);
 pTLambda        = pdfTLambda(t, lambda, kappa, b, m);
+pN              = pdfN(n_, kappa, b, m);
 
 %% check normalization
 zT              = integral(@(t) pdfT(t, kappa, b), ...
                     eps, 1e4, 'AbsTol', 1e-9);
 zLambda         = integral(@(lambda) pdfLambda(lambda, kappa, b, m), ...
+                    eps, 1e4, 'AbsTol', 1e-9);
+zN              = integral(@(n) pdfN(n, kappa, b, m), ...
                     eps, 1e4, 'AbsTol', 1e-9);
 zTgivenLambda   = zeros(size(lambda_));
 for i = 1 : length(lambda_)
